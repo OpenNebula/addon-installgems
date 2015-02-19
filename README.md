@@ -4,7 +4,7 @@ addon-installgems
 _Creation of distro packages to install opennebula ruby gems_
 _This script uses fpm gem to generate OS packages_
 
-* fpm wiki -- http://repository.egi.eu/
+* fpm wiki -- https://github.com/jordansissel/fpm/wiki
 
 Requirements
 ------------
