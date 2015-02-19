@@ -9,7 +9,7 @@ _This script uses fpm gem to generate OS packages_
 Requirements
 ------------
 
-* OpenNebula > 4.10
+* opennebula-ruby > 4.10.2
 * Python 2.4
 
 Configuration
