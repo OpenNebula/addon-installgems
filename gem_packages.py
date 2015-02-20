@@ -10,11 +10,12 @@ if sys.version_info < (2, 4):
 import os
 import logging
 import optparse
-import hashlib
+#import hashlib
 import datetime
 import time
 import commands
 import platform
+import shutil
 import StringIO
 from subprocess import Popen, PIPE
 
@@ -23,34 +24,41 @@ gems_dir = 'gems_dir'
 
 time_format_definition = "%Y-%m-%dT%H:%M:%SZ"
 log = logging.getLogger('gem_packages')
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 ch = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 log.addHandler(ch)
+purge = 0
 
 
 
 def main(argv):
     try:
-        opts, args = getopt.getopt(argv,'hd',['help','debug'])
+        opts, args = getopt.getopt(argv,'hdp',['help','debug','purge='])
     except getopt.GetoptError:
         print 'gem_packages.py -h'
         sys.exit(2)
     for opt, arg in opts:
         if opt in ('-h','--help'):
             print 'gem_packages.py'
-            print 'REQUIRED SUDO CONF:'
-            print '<user>        ALL= (ALL)      NOPASSWD:       /usr/bin/yum install *'
-            print '<user>        ALL= (ALL)      NOPASSWD:       /usr/bin/apt-get install *'
-            print '<user>        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm'
+            print 'Required sudo conf:'
+            print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/yum install *'
+            print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/apt-get install *'
+            print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm'
             print ''
-            print 'COMMAND OPTIONS:'
-            print '-h: this help.'
-            print '-d: (optional) debug mode.'
+            print 'Usage:'
+            print '    gem_packages.py [OPTIONS]'
+            print ''
+            print 'Options:'
+            print '    -h, --help   Shows this help'
+            print '    -d, --debug  Enable debug output'
+            print '    -p, --purge  Purge temporal gems dir'
             sys.exit()
         elif opt in ('-d','--debug'):
-            ch.setLevel(logging.DEBUG)
+            log.setLevel(logging.DEBUG)
+        elif opt in ('-p','--purge'):
+            purge = 1
 
 def execute_cmd(cmd):
     log.debug('Running: %s' % cmd)
@@ -100,6 +108,8 @@ def install_gems():
     global gems_dir
     path = os.getcwd()
     gems_dir = os.path.join(path, gems_dir)
+    if purge:
+        shutil.rmtree(gems_dir)
     if not os.path.isdir(gems_dir):
         try:
             os.makedirs(gems_dir)
