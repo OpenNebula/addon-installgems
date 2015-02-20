@@ -104,7 +104,7 @@ def install_packages(release):
 
     return package
 
-def install_gems():
+def generate_gems():
     global gems_dir
     path = os.getcwd()
     gems_dir = os.path.join(path, gems_dir)
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
     release = platform.dist()[0]
     package = install_packages(release)
-    install_gems()
+    generate_gems()
     generate_packages(package)
 
     sys.exit(0)
