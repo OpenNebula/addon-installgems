@@ -10,7 +10,6 @@ if sys.version_info < (2, 4):
 import os
 import logging
 import optparse
-#import hashlib
 import datetime
 import time
 import commands
@@ -72,7 +71,7 @@ def execute_cmd(cmd):
         sys.exit(2)
 
 def install_packages(release):
-    if (release == 'redhat') or (release == 'centos'):
+    if (release == 'redhat') or (release == 'centos') or (release == 'ScientificSL'):
         print "redhat OS flavour detected."
         pkg_manager = "yum"
         pkg_fpm = "ruby-devel gcc"
