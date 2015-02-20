@@ -133,7 +133,7 @@ def generate_packages(pkg):
 
     command = "find %s/cache -name '*.gem' | xargs -rn1 fpm --prefix %s -p %s -s gem -t %s" % (gems_dir, prefix, gems_dir, pkg)
     output = execute_cmd(command)
-    print output
+    log.debug(output)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
