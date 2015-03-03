@@ -10,7 +10,7 @@ This configuration is useful for automate the deployment of OpenNebula service. 
 To contribute bug patches or new features, you can use the github Pull Request model. It is assumed that code and documentation are contributed under the Apache License 2.0. 
 
 More info:
-* [How to Contribute](http://opennebula.org/software:add-ons#how_to_contribute_to_an_existing_add-on)
+* [How to Contribute](http://opennebula.org/addons/contribute/)
 * Support: [OpenNebula Support Forum](https://forum.opennebula.org/c/support)
 * Development: [OpenNebula Development Forum](https://forum.opennebula.org/c/development)
 * Issues Tracking: Github issues
