@@ -35,8 +35,7 @@ Only Debian and RedHat linux OS flavours are supported at this moment.
 
 * opennebula-ruby > 4.10.2
 * Python 2.4
-This script uses fpm gem to generate OS packages. This gem is automatically installed by the addon.
-* [fpm wiki](https://github.com/jordansissel/fpm/wiki)
+* This script uses fpm gem to generate OS packages. This gem is automatically installed by the addon. [fpm wiki](https://github.com/jordansissel/fpm/wiki)
 
 ## Installation
 
