@@ -18,7 +18,7 @@ import shutil
 import StringIO
 from subprocess import Popen, PIPE
 
-install_gems_path = "/usr/share/one/install_gems"
+install_gems_path = "/home/lsimngar/install_gems"
 gems_dir = 'gems_dir'
 
 time_format_definition = "%Y-%m-%dT%H:%M:%SZ"
@@ -29,12 +29,14 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 log.addHandler(ch)
 purge = 0
-
+createrepo = 0
 
 
 def main(argv):
+    global purge
+    global createrepo
     try:
-        opts, args = getopt.getopt(argv,'hdp',['help','debug','purge='])
+        opts, args = getopt.getopt(argv,'hdpc',['help','debug','purge', 'createrepo'])
     except getopt.GetoptError:
         print 'gem_packages.py -h'
         sys.exit(2)
@@ -50,14 +52,17 @@ def main(argv):
             print '    gem_packages.py [OPTIONS]'
             print ''
             print 'Options:'
-            print '    -h, --help   Shows this help'
-            print '    -d, --debug  Enable debug output'
-            print '    -p, --purge  Purge temporal gems dir'
+            print '    -h, --help       Shows this help'
+            print '    -d, --debug      Enable debug output'
+            print '    -p, --purge      Purge temporal gems dir'
+            print '    -c, --createrepo Generates repo dir or Packages.gz file'
             sys.exit()
         elif opt in ('-d','--debug'):
             log.setLevel(logging.DEBUG)
         elif opt in ('-p','--purge'):
             purge = 1
+        elif opt in ('-c','--createrepo'):
+            createrepo = 1
 
 def execute_cmd(cmd):
     log.debug('Running: %s' % cmd)
@@ -135,6 +140,18 @@ def generate_packages(pkg):
     output = execute_cmd(command)
     log.debug(output)
 
+def create_repo(pkg):
+    if (pkg == 'rpm'):
+        print "Creating rpm repo files."
+        # it requires createrepo
+        command = "createrepo -v %s" % (gems_dir)
+    elif (pkg == 'deb'):
+        # it requires dpkg-dev package
+        print "Creating Packages.gz file."
+        command = "dpkg-scanpackages %s /dev/null | gzip -9c > %s/Packages.gz" % (gems_dir,gems_dir)
+
+    output = execute_cmd(command)
+
 if __name__ == "__main__":
     main(sys.argv[1:])
     euid = os.geteuid()
@@ -147,5 +164,8 @@ if __name__ == "__main__":
     package = install_packages(release)
     generate_gems()
     generate_packages(package)
+
+    if createrepo:
+        create_repo(package)
 
     sys.exit(0)

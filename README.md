@@ -41,6 +41,16 @@ Only Debian and RedHat linux OS flavours are supported at this moment.
 
 Install opennebula-ruby and this script in your target system as usual.
 
+### Optional
+To generate the repo files install createrepo package in RedHat:
+~~~
+# yum install createrepo
+~~~
+To generate Packages.gz install dpkg-dev in Debian:
+~~~
+# apt-get install dpkg-dev
+~~~
+
 ## Configuration
 
 * Set sudo to allow to execute these commands as root, as example to execute this script as oneadmin user:
