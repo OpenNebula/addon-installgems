@@ -42,9 +42,9 @@ Only Debian and RedHat linux OS flavours are supported at this moment.
 Install opennebula-ruby and this script in your target system as usual.
 
 ### Optional
-To generate the repo files install createrepo package in RedHat:
+To generate the repo files install these packages in RedHat:
 ~~~
-# yum install createrepo
+# yum install createrepo redhat-lsb rpm-build
 ~~~
 To generate Packages.gz install dpkg-dev in Debian:
 ~~~
@@ -58,6 +58,11 @@ To generate Packages.gz install dpkg-dev in Debian:
 oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/yum install *
 oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/apt-get install *
 oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm
+~~~
+
+* Set `install_gems` path in `gem_packages.py` if it is needed:
+~~~
+install_gems_path = "/usr/share/one/install_gems"
 ~~~
 
 ## Usage
