@@ -18,7 +18,7 @@ import shutil
 import StringIO
 from subprocess import Popen, PIPE
 
-install_gems_path = "/home/lsimngar/install_gems"
+install_gems_path = "/usr/share/one/install_gems"
 gems_dir = 'gems_dir'
 
 time_format_definition = "%Y-%m-%dT%H:%M:%SZ"
