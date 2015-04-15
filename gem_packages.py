@@ -17,9 +17,11 @@ import platform
 import shutil
 import StringIO
 from subprocess import Popen, PIPE
+from distutils.version import LooseVersion, StrictVersion
 
 install_gems_path = "/usr/share/one/install_gems"
 gems_dir = 'gems_dir'
+exclude_gems = ['sinatra', 'rack']
 
 time_format_definition = "%Y-%m-%dT%H:%M:%SZ"
 log = logging.getLogger('gem_packages')
@@ -29,14 +31,12 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 log.addHandler(ch)
 purge = 0
-createrepo = 0
+
 
 
 def main(argv):
-    global purge
-    global createrepo
     try:
-        opts, args = getopt.getopt(argv,'hdpc',['help','debug','purge', 'createrepo'])
+        opts, args = getopt.getopt(argv,'hdp',['help','debug','purge='])
     except getopt.GetoptError:
         print 'gem_packages.py -h'
         sys.exit(2)
@@ -52,17 +52,14 @@ def main(argv):
             print '    gem_packages.py [OPTIONS]'
             print ''
             print 'Options:'
-            print '    -h, --help       Shows this help'
-            print '    -d, --debug      Enable debug output'
-            print '    -p, --purge      Purge temporal gems dir'
-            print '    -c, --createrepo Generates repo dir or Packages.gz file'
+            print '    -h, --help   Shows this help'
+            print '    -d, --debug  Enable debug output'
+            print '    -p, --purge  Purge temporal gems dir'
             sys.exit()
         elif opt in ('-d','--debug'):
             log.setLevel(logging.DEBUG)
         elif opt in ('-p','--purge'):
             purge = 1
-        elif opt in ('-c','--createrepo'):
-            createrepo = 1
 
 def execute_cmd(cmd):
     log.debug('Running: %s' % cmd)
@@ -108,7 +105,7 @@ def install_packages(release):
 
     return package
 
-def generate_gems():
+def generate_gems(package,version):
     global gems_dir
     path = os.getcwd()
     gems_dir = os.path.join(path, gems_dir)
@@ -125,32 +122,25 @@ def generate_gems():
     output = execute_cmd(command)
     buf = StringIO.StringIO(output)
     for line in buf:
-        command = "gem install --no-ri --no-rdoc --install-dir %s %s" % (gems_dir, line)
-        output = execute_cmd(command)
+        if not any(exclude_gem in line for exclude_gem in exclude_gems):
+            command = "gem install --no-ri --no-rdoc --install-dir %s %s" % (gems_dir, line)
+            output = execute_cmd(command)
 
-def generate_packages(pkg):
+def generate_packages(pkg,version):
     print "Creating gem packages."
 
     if (pkg == 'rpm'):
-        prefix = "/usr/share/gems"
+        if (LooseVersion(version) < LooseVersion("7")):
+            prefix = "/usr/lib/ruby/gems/1.8"
+        else:
+            prefix = "/usr/share/gems"
+        log.debug("Found  RH/CentOS %s. prefix set to: %s" % (version, prefix))
     elif (pkg == 'deb'):
         prefix = "/var/lib/gems"
 
     command = "find %s/cache -name '*.gem' | xargs -rn1 fpm --prefix %s -p %s -s gem -x doc -t %s" % (gems_dir, prefix, gems_dir, pkg)
     output = execute_cmd(command)
     log.debug(output)
-
-def create_repo(pkg):
-    if (pkg == 'rpm'):
-        print "Creating rpm repo files."
-        # it requires createrepo
-        command = "createrepo -v %s" % (gems_dir)
-    elif (pkg == 'deb'):
-        # it requires dpkg-dev package
-        print "Creating Packages.gz file."
-        command = "dpkg-scanpackages %s /dev/null | gzip -9c > %s/Packages.gz" % (gems_dir,gems_dir)
-
-    output = execute_cmd(command)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
@@ -161,11 +151,9 @@ if __name__ == "__main__":
         sys.exit(2)
 
     release = platform.dist()[0]
+    version = platform.dist()[1]
     package = install_packages(release)
-    generate_gems()
-    generate_packages(package)
-
-    if createrepo:
-        create_repo(package)
+    generate_gems(package,version)
+    generate_packages(package,version)
 
     sys.exit(0)
