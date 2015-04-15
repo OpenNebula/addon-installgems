@@ -65,6 +65,11 @@ oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm
 install_gems_path = "/usr/share/one/install_gems"
 ~~~
 
+* Set exclude_gems variable if it is required. In this case gem_packages will not generate sinatra and rack rpms: 
+~~~
+exclude_gems = ['sinatra', 'rack']
+~~~
+
 ## Usage
 
 * You must execute the script as regular user or oneadmin (never as root)

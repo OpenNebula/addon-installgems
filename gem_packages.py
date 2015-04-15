@@ -17,9 +17,12 @@ import platform
 import shutil
 import StringIO
 from subprocess import Popen, PIPE
+from distutils.version import LooseVersion, StrictVersion
 
 install_gems_path = "/usr/share/one/install_gems"
 gems_dir = 'gems_dir'
+exclude_gems = ['sinatra', 'rack']
+
 
 time_format_definition = "%Y-%m-%dT%H:%M:%SZ"
 log = logging.getLogger('gem_packages')
@@ -125,14 +128,19 @@ def generate_gems():
     output = execute_cmd(command)
     buf = StringIO.StringIO(output)
     for line in buf:
-        command = "gem install --no-ri --no-rdoc --install-dir %s %s" % (gems_dir, line)
-        output = execute_cmd(command)
+        if not any(exclude_gem in line for exclude_gem in exclude_gems):
+            command = "gem install --no-ri --no-rdoc --install-dir %s %s" % (gems_dir, line)
+            output = execute_cmd(command)
 
-def generate_packages(pkg):
+def generate_packages(pkg,version):
     print "Creating gem packages."
 
     if (pkg == 'rpm'):
-        prefix = "/usr/share/gems"
+        if (LooseVersion(version) < LooseVersion("7")):
+            prefix = "/usr/lib/ruby/gems/1.8"
+        else:
+            prefix = "/usr/share/gems"
+        log.debug("Found  RH/CentOS %s. prefix set to: %s" % (version, prefix))
     elif (pkg == 'deb'):
         prefix = "/var/lib/gems"
 
@@ -161,9 +169,10 @@ if __name__ == "__main__":
         sys.exit(2)
 
     release = platform.dist()[0]
+    version = platform.dist()[1]
     package = install_packages(release)
     generate_gems()
-    generate_packages(package)
+    generate_packages(package,version)
 
     if createrepo:
         create_repo(package)
