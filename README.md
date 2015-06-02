@@ -39,6 +39,7 @@ Only Debian and RedHat linux OS flavours are supported at this moment.
 
 ## Installation
 
+**NOTE:** For security reasons it is recommended to execute this addon in a sandbox rather than on a production system.
 Install opennebula-ruby and this script in your target system as usual.
 
 ### Optional
@@ -57,7 +58,7 @@ To generate Packages.gz install dpkg-dev in Debian:
 ~~~
 oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/yum install *
 oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/apt-get install *
-oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm
+oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm mini_portile
 ~~~
 
 * Set `install_gems` path in `gem_packages.py` if it is needed:
