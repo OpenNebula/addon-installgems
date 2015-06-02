@@ -21,7 +21,7 @@ from distutils.version import LooseVersion, StrictVersion
 
 install_gems_path = "/usr/share/one/install_gems"
 gems_dir = 'gems_dir'
-exclude_gems = ['sinatra', 'rack']
+exclude_gems = []
 
 
 time_format_definition = "%Y-%m-%dT%H:%M:%SZ"
@@ -144,7 +144,7 @@ def generate_packages(pkg,version):
     elif (pkg == 'deb'):
         prefix = "/var/lib/gems"
 
-    command = "find %s/cache -name '*.gem' | xargs -rn1 fpm --prefix %s -p %s -s gem -x doc -t %s" % (gems_dir, prefix, gems_dir, pkg)
+    command = "find %s/cache -name '*.gem' | xargs -rn1 fpm --prefix %s -p %s -s gem -x doc -x build_info -t %s" % (gems_dir, prefix, gems_dir, pkg)
     output = execute_cmd(command)
     log.debug(output)
 
