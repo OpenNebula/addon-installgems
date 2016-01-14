@@ -102,6 +102,8 @@ def install_packages(release):
     print "Intalling fpm gem."
     command = "sudo gem install fpm mini_portile"
     output = execute_cmd(command)
+    command = "sudo gem install fpm mini_portile2:2.0.0.rc2"
+    output = execute_cmd(command)
     print "Installing required packages to compile new gems."
     command = "%s --showallpackages" % install_gems_path
     output = execute_cmd(command)

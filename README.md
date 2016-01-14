@@ -59,6 +59,7 @@ To generate Packages.gz install dpkg-dev in Debian:
 oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/yum install *
 oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/apt-get install *
 oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm mini_portile
+oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm mini_portile2\:2.0.0.rc2
 ~~~
 
 * Set `install_gems` path in `gem_packages.py` if it is needed:
