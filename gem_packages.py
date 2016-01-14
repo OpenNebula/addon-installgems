@@ -19,7 +19,7 @@ import StringIO
 from subprocess import Popen, PIPE
 from distutils.version import LooseVersion, StrictVersion
 
-install_gems_path = "/usr/share/one/install_gems"
+install_gems_path = "/home/saltdemo/install_gems"
 gems_dir = 'gems_dir'
 exclude_gems = []
 
@@ -49,7 +49,7 @@ def main(argv):
             print 'Required sudo conf:'
             print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/yum install *'
             print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/apt-get install *'
-            print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm mini_portile'
+            print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm mini_portile2:2.0.0.rc2'
             print ''
             print 'Usage:'
             print '    gem_packages.py [OPTIONS]'
@@ -100,8 +100,6 @@ def install_packages(release):
     command = "sudo %s install -y %s" % (pkg_manager, pkg_fpm)
     output = execute_cmd(command)
     print "Intalling fpm gem."
-    command = "sudo gem install fpm mini_portile"
-    output = execute_cmd(command)
     command = "sudo gem install fpm mini_portile2:2.0.0.rc2"
     output = execute_cmd(command)
     print "Installing required packages to compile new gems."
