@@ -49,7 +49,7 @@ def main(argv):
             print 'Required sudo conf:'
             print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/yum install *'
             print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/apt-get install *'
-            print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm mini_portile2:2.0.0.rc2'
+            print '    <user>        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm mini_portile2 pkg-config'
             print ''
             print 'Usage:'
             print '    gem_packages.py [OPTIONS]'
@@ -100,7 +100,7 @@ def install_packages(release):
     command = "sudo %s install -y %s" % (pkg_manager, pkg_fpm)
     output = execute_cmd(command)
     print "Intalling fpm gem."
-    command = "sudo gem install fpm mini_portile2:2.0.0.rc2"
+    command = "sudo gem install fpm mini_portile2 pkg-config"
     output = execute_cmd(command)
     print "Installing required packages to compile new gems."
     command = "%s --showallpackages" % install_gems_path
