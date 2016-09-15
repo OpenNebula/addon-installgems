@@ -18,9 +18,10 @@ import shutil
 import StringIO
 from subprocess import Popen, PIPE
 from distutils.version import LooseVersion, StrictVersion
+from os.path import expanduser
 
 install_gems_path = "/usr/share/one/install_gems"
-gems_dir = '/var/lib/one/.gem/ruby'
+gems_dir = '.gem/ruby'
 exclude_gems = []
 
 
@@ -113,7 +114,7 @@ def install_packages(release):
 
 def generate_gems():
     global gems_dir
-    path = os.getcwd()
+    path = expanduser("~")
     gems_dir = os.path.join(path, gems_dir)
     if purge:
         shutil.rmtree(gems_dir)
@@ -121,7 +122,7 @@ def generate_gems():
         try:
             os.makedirs(gems_dir)
         except:
-            print("Error creating dir %d , Exiting" % gems_dir)
+            print("Error creating dir %s , Exiting" % gems_dir)
             sys.exit(2)
     print "Compiling required gems.. Please wait."
     command = "%s --showallgems" % install_gems_path
