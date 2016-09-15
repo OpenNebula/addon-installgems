@@ -20,7 +20,7 @@ from subprocess import Popen, PIPE
 from distutils.version import LooseVersion, StrictVersion
 
 install_gems_path = "/usr/share/one/install_gems"
-gems_dir = 'gems_dir'
+gems_dir = '/var/lib/one/.gem/ruby'
 exclude_gems = []
 
 
@@ -129,7 +129,7 @@ def generate_gems():
     buf = StringIO.StringIO(output)
     for line in buf:
         if not any(exclude_gem in line for exclude_gem in exclude_gems):
-            command = "gem install --no-ri --no-rdoc --install-dir %s %s" % (gems_dir, line)
+            command = "gem install --no-ri --no-rdoc --user-install %s" % (line)
             output = execute_cmd(command)
 
 def generate_packages(pkg,version):
