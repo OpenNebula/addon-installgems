@@ -78,7 +78,7 @@ exclude_gems = ['sinatra', 'rack']
 ~~~
 gem_packages.py
 ~~~
-* The New deb/rpm packages will be available into gems_dir directory.
+* The New deb/rpm packages will be available into ~/.gem/ruby/ directory.
 
 * Extra info:
 ~~~
