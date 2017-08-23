@@ -61,11 +61,6 @@ oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/apt-get install *
 oneadmin        ALL= (ALL)      NOPASSWD:       /usr/bin/gem install fpm mini_portile2 pkg-config
 ~~~
 
-* Set `install_gems` path in `gem_packages.py` if it is needed:
-~~~
-install_gems_path = "/usr/share/one/install_gems"
-~~~
-
 * Set exclude_gems variable if it is required. In this case gem_packages will not generate sinatra and rack rpms: 
 ~~~
 exclude_gems = ['sinatra', 'rack']
@@ -76,13 +71,13 @@ exclude_gems = ['sinatra', 'rack']
 * You must execute the script as regular user or oneadmin (never as root)
 * To generate the new gem packages just run:
 ~~~
-gem_packages.py
+python gem_packages.py
 ~~~
 * The New deb/rpm packages will be available into ~/.gem/ruby/ directory.
 
 * Extra info:
 ~~~
-gem_packages.py --help
+python gem_packages.py --help
 ~~~
 
 ## TODO
