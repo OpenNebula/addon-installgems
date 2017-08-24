@@ -127,8 +127,11 @@ def generate_gems():
         except:
             print("Error creating dir %s , Exiting" % gems_dir)
             sys.exit(2)
-    print "Compiling required gems.. Please wait."
 
+    # Detect if Gemfile and Gemfile.lock are present
+    # in that case we use Bundler, if not we use --showallgems command
+    # to get the gem list and their required versions
+    print "Compiling required gems.. Please wait."
     if os.path.isfile(lock_gems_path):
         log.debug("Found GemLock file: "+lock_gems_path)
         for gemfile in glob.glob(os.path.join(opennebula_path, 'Gemfile*')):
