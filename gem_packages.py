@@ -16,12 +16,15 @@ import commands
 import platform
 import shutil
 import StringIO
+import glob
 from subprocess import Popen, PIPE
 from distutils.version import LooseVersion, StrictVersion
 from os.path import expanduser
 
-install_gems_path = "/usr/share/one/install_gems"
-gems_dir = '.gem/ruby'
+opennebula_path = "/usr/share/one"
+install_gems_path = "%s/install_gems" % opennebula_path
+lock_gems_path = "%s/Gemfile" % opennebula_path
+gems_dir = '.gem'
 exclude_gems = []
 
 
@@ -72,7 +75,7 @@ def execute_cmd(cmd):
     log.debug('Running: %s' % cmd)
     p = Popen(cmd, shell=True, stdout=PIPE)
     output = p.communicate()[0]
-    if p.returncode == 0:
+    if (p.returncode == 0) or (p.returncode == 34):
         return (output)
     else:
         log.debug(output)
@@ -124,14 +127,37 @@ def generate_gems():
         except:
             print("Error creating dir %s , Exiting" % gems_dir)
             sys.exit(2)
+
+    # Detect if Gemfile and Gemfile.lock are present
+    # in that case we use Bundler, if not we use --showallgems command
+    # to get the gem list and their required versions
     print "Compiling required gems.. Please wait."
-    command = "%s --showallgems" % install_gems_path
-    output = execute_cmd(command)
-    buf = StringIO.StringIO(output)
-    for line in buf:
-        if not any(exclude_gem in line for exclude_gem in exclude_gems):
-            command = "gem install --no-ri --no-rdoc --user-install %s" % (line)
-            output = execute_cmd(command)
+    if os.path.isfile(lock_gems_path):
+        log.debug("Found GemLock file: "+lock_gems_path)
+        for gemfile in glob.glob(os.path.join(opennebula_path, 'Gemfile*')):
+            try:
+                shutil.copy2(gemfile, '.')
+            except:
+	        print("Error creating file %s , Exiting" % gemfile)
+                sys.exit(3)
+        command = "bundle install --path %s" % gems_dir
+        output = execute_cmd(command)
+        log.debug(output)
+
+        # Workaround for nokogiri update
+        command = "bundle update nokogiri"
+        output = execute_cmd(command)
+
+        log.debug(output)
+    else:
+        command = "%s --showallgems" % install_gems_path
+        output = execute_cmd(command)
+        buf = StringIO.StringIO(output)
+        for line in buf:
+            if not any(exclude_gem in line for exclude_gem in exclude_gems):
+                command = "gem install --no-ri --no-rdoc --user-install %s" % (line)
+                output = execute_cmd(command)
+    gems_dir = "%s/ruby" % gems_dir
 
 def generate_packages(pkg,version):
     print "Creating gem packages."
@@ -179,3 +205,4 @@ if __name__ == "__main__":
         create_repo(package)
 
     sys.exit(0)
+
